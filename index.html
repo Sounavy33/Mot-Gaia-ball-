@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GaIA IP — Bolinha Direta</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .status-card {
+            background: #111827;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #1f2937;
+            text-align: center;
+            max-width: 90%;
+            width: 320px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        h1 { font-size: 15px; color: #38bdf8; margin-bottom: 8px; font-family: monospace; }
+        p { font-size: 12px; color: #9ca3af; line-height: 1.4; }
+
+        /* A Bolinha Flutuante Pronta para Uso */
+        #gaia-bolinha {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 48px;
+            height: 48px;
+            background: rgba(56, 189, 248, 0.15);
+            border: 2px solid #38bdf8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999999;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            touch-action: none;
+            user-select: none;
+        }
+        #gaia-bolinha::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background-color: #38bdf8;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="status-card">
+        <h1>GAIA IP ACTIVE</h1>
+        <p>Bolinha livre, sem amarras, sem ruído. Toque no farol tátil no canto da tela.</p>
+    </div>
+
+    <div id="gaia-bolinha" title="Farol Tátil"></div>
+
+    <script>
+        const ball = document.getElementById('gaia-bolinha');
+        let isDragging = false, startX, startY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+        ball.addEventListener('touchstart', dragStart, false);
+        ball.addEventListener('touchend', dragEnd, false);
+        ball.addEventListener('touchmove', drag, false);
+
+        ball.addEventListener('mousedown', dragStart, false);
+        window.addEventListener('mouseup', dragEnd, false);
+        window.addEventListener('mousemove', drag, false);
+
+        function dragStart(e) {
+            if (e.type === "touchstart") {
+                initialX = e.touches[0].clientX - xOffset;
+                initialY = e.touches[0].clientY - yOffset;
+            } else {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+            if (e.target === ball) isDragging = true;
+        }
+
+        function dragEnd() {
+            isDragging = false;
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                if (e.type === "touchmove") {
+                    currentX = e.touches[0].clientX - initialX;
+                    currentY = e.touches[0].clientY - initialY;
+                } else {
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                }
+                xOffset = currentX;
+                yOffset = currentY;
+                ball.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+            }
+        }
+
+        ball.addEventListener('click', () => {
+            if (!isDragging) {
+                console.log("[GaIA IP]: Ativação direta disparada.");
+            }
+        });
+    </script>
+</body>
+</html>
